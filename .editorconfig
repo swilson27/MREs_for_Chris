@@ -1,3 +1,5 @@
+# This is a config file respected by many editors (some may need a plugin)
+# to make code formatting more consistent between users.
 [*]
 indent_style = space
 indent_size = 4

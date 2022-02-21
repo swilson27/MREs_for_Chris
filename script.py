@@ -1,8 +1,9 @@
+#!/usr/bin/env python
 """Use docstrings at the top of the file to document scripts' purpose."""
+import datetime as dt
 import json
 import logging
 import pickle
-import datetime as dt
 
 import navis
 import pymaid
@@ -18,13 +19,22 @@ with open(CREDENTIALS_DIR / "example.json") as f:
 catmaid = pymaid.CatmaidInstance(**CREDS)
 
 
-def example_function_with_cache(some_arg, another_arg, force=False):
+def example_function(some_arg, another_arg):
     """Use docstrings like this to describe functions.
 
     Here, some_arg and another_arg would be something like a name (str) or number
     which inform a query from CATMAID.
-    You may want to cache "raw" data which takes a long time to fetch or can change beneath your feet.
-    Where possible, don't match cached and fresh data.
+    """
+    return {"some_arg": some_arg, "another_arg": another_arg}
+
+
+def example_function_with_cache(some_arg, another_arg, force=False):
+    """A wrapper around the above with a cache.
+
+    You may want to cache raw data which takes a long time to fetch/generate or can change beneath your feet.
+    Where possible, don't mix cached and fresh data.
+
+    Cached data should not be shared, or kept for a long time.
 
     force=True ignores the cache and generates (then caches) new data.
     """
@@ -42,5 +52,6 @@ def example_function_with_cache(some_arg, another_arg, force=False):
 
 
 # write your output to a timestamped file like
-with open(OUTPUT_DIR / f"output_{dt.date.today().isoformat()}.txt", "w") as f:
-    f.write(my_serialised_output)
+datestamp = dt.date.today().isoformat()
+with open(OUTPUT_DIR / f"output_{datestamp}.txt", "w") as f:
+    f.write("Hello, world!")
