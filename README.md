@@ -25,7 +25,6 @@ git init
 # Commit the existing files so you can track your changes
 git add .
 git commit -m "Template from clbarnes/pymaid-template
-
 Co-authored-by: Chris Barnes <cbarnes@mrc-lmb.cam.ac.uk>"
 
 # Ensuring that you are using a modern version of python (3.9, here), create and activate a virtual environment
