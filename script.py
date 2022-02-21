@@ -11,6 +11,8 @@ import pymaid
 from utils.constants import CACHE_DIR, CREDENTIALS_DIR, OUTPUT_DIR
 
 logger = logging.getLogger(__name__)
+logger.info("Using navis version %s", navis.__version__)
+
 
 # change "example.json" to match your credentials file's name
 with open(CREDENTIALS_DIR / "example.json") as f:
@@ -31,7 +33,8 @@ def example_function(some_arg, another_arg):
 def example_function_with_cache(some_arg, another_arg, force=False):
     """A wrapper around the above with a cache.
 
-    You may want to cache raw data which takes a long time to fetch/generate or can change beneath your feet.
+    You may want to cache raw data which takes a long time to fetch/generate
+    or can change beneath your feet.
     Where possible, don't mix cached and fresh data.
 
     Cached data should not be shared, or kept for a long time.
