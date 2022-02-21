@@ -1,12 +1,16 @@
 # Your Project Name
 
 Explain what this codebase is for; goals, usage, papers, resources etc., here.
+This README should answer any questions you think you might get bored of
+being asked by other users, and anything you have ever struggled to remember
+(e.g. how to set it up).
 
-This repository was based on a template at https://github.com/clbarnes/pymaid-template .
+This repository was based on a template at https://github.com/navis-org/pymaid_template .
 
 ## Template usage
 
-This section can be deleted once read, but please keep the above attribution line.
+This section and below can be deleted once read.
+Modify the above but please keep the attribution line.
 
 ### First use
 
@@ -15,7 +19,7 @@ This section can be deleted once read, but please keep the above attribution lin
 PROJECT_NAME="my_project"
 
 # Clone this template, then change directory into it
-git clone https://github.com/clbarnes/pymaid-template.git "$PROJECT_NAME"
+git clone https://github.com/navis-org/pymaid_template.git "$PROJECT_NAME"
 cd "$PROJECT_NAME"
 
 # Delete the template's git history and license
@@ -24,8 +28,7 @@ rm -rf .git/ LICENSE
 git init
 # Commit the existing files so you can track your changes
 git add .
-git commit -m "Template from clbarnes/pymaid-template
-Co-authored-by: Chris Barnes <cbarnes@mrc-lmb.cam.ac.uk>"
+git commit -m "Template from navis-org/pymaid_template"
 
 # Ensuring that you are using a modern version of python (3.9, here), create and activate a virtual environment
 python3.9 -m venv --prompt "$PROJECT_NAME" venv
