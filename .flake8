@@ -1,7 +1,0 @@
-# This is a config file for the linter `flake8`,
-# which makes it play nice with the formatter `black`
-[flake8]
-max-line-length = 88
-extend-ignore = E203
-
-exclude = venv
