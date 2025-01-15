@@ -7,4 +7,4 @@ CREDENTIALS_DIR = PROJECT_DIR / "credentials"
 OUTPUT_DIR = PROJECT_DIR / "output"
 CACHE_DIR = PROJECT_DIR / "cache"
 
-SEED = 1234
+SEED = 1998
