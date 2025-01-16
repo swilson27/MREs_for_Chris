@@ -1,0 +1,161 @@
+### Issue/MRE1 ###
+
+
+Description:
+
+update: For some reason this now works, despite me changing no code? Seems it could have been that it was using the 'testenv' environment rather than the correct 'freaksenv' — which I dumped into the requirements.txt file
+feel free to ignore MRE1
+
+In the original scripts, after left and right neurons are fetched from CATMAID these are then prepared for N/SyNBLAST
+The neurons of the left list are first transformed (as if they were on the right side, via landmarks)
+These transformed left and raw right skeletons are then converted into dotprops (prior to NBLAST and SyNBLAST being run in the actual script)
+
+An error has recently been occuring (I think) within the multiprocessing of the 'makedotprop' function, via the 'concurrent.futures module' 
+See below for the full output. I've looked into the module and this error but unfortunately haven't been able to fix it
+
+Error output:
+
+Traceback (most recent call last):
+  File "/home/swilson/Documents/freaks/testenv/lib/python3.9/site-packages/urllib3/connection.py", line 199, in _new_conn
+    sock = connection.create_connection(
+  File "/home/swilson/Documents/freaks/testenv/lib/python3.9/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/home/swilson/Documents/freaks/testenv/lib/python3.9/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+TimeoutError: [Errno 110] Connection timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/swilson/Documents/freaks/testenv/lib/python3.9/site-packages/urllib3/connectionpool.py", line 789, in urlopen
+    response = self._make_request(
+  File "/home/swilson/Documents/freaks/testenv/lib/python3.9/site-packages/urllib3/connectionpool.py", line 490, in _make_request
+    raise new_e
+  File "/home/swilson/Documents/freaks/testenv/lib/python3.9/site-packages/urllib3/connectionpool.py", line 466, in _make_request
+    self._validate_conn(conn)
+  File "/home/swilson/Documents/freaks/testenv/lib/python3.9/site-packages/urllib3/connectionpool.py", line 1095, in _validate_conn
+    conn.connect()
+  File "/home/swilson/Documents/freaks/testenv/lib/python3.9/site-packages/urllib3/connection.py", line 693, in connect
+    self.sock = sock = self._new_conn()
+  File "/home/swilson/Documents/freaks/testenv/lib/python3.9/site-packages/urllib3/connection.py", line 214, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPSConnection object at 0x7f249a55e6d0>: Failed to establish a new connection: [Errno 110] Connection timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/swilson/Documents/freaks/testenv/lib/python3.9/site-packages/requests/adapters.py", line 667, in send
+    resp = conn.urlopen(
+  File "/home/swilson/Documents/freaks/testenv/lib/python3.9/site-packages/urllib3/connectionpool.py", line 843, in urlopen
+    retries = retries.increment(
+  File "/home/swilson/Documents/freaks/testenv/lib/python3.9/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='neurophyla.mrc-lmb.cam.ac.uk', port=443): Max retries exceeded with url: /catmaid/drosophila/l1/seymour/1/skeletons/40045/compact-detail?with_history=false&with_tags=true&with_connectors=true&with_merge_history=false (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f249a55e6d0>: Failed to establish a new connection: [Errno 110] Connection timed out'))
+
+
+
+
+
+
+### Issue/MRE2 ###
+
+
+Description:
+
+
+Recently I have been getting an error for both the N/SyNBLAST scripts, which weirdly only came about when attempting to address issue 2. That error is:
+
+Traceback (most recent call last):
+  File "/Users/swilson/Documents/PhD/Freaks/scripts/script_morph.py", line 482, in <module>
+    df = cross_validation2(paired)
+  File "/Users/swilson/Documents/PhD/Freaks/scripts/script_morph.py", line 462, in cross_validation
+    df[header] = df[header].astype(dtype)
+  File "/Users/swilson/Documents/PhD/Devneurons/freaksenv/lib/python3.9/site-packages/pandas/core/generic.py", line 6240, in astype
+    new_data = self._mgr.astype(dtype=dtype, copy=copy, errors=errors)
+  File "/Users/swilson/Documents/PhD/Devneurons/freaksenv/lib/python3.9/site-packages/pandas/core/internals/managers.py", line 448, in astype
+    return self.apply("astype", dtype=dtype, copy=copy, errors=errors)
+  File "/Users/swilson/Documents/PhD/Devneurons/freaksenv/lib/python3.9/site-packages/pandas/core/internals/managers.py", line 352, in apply
+    applied = getattr(b, f)(**kwargs)
+  File "/Users/swilson/Documents/PhD/Devneurons/freaksenv/lib/python3.9/site-packages/pandas/core/internals/blocks.py", line 526, in astype
+    new_values = astype_array_safe(values, dtype, copy=copy, errors=errors)
+  File "/Users/swilson/Documents/PhD/Devneurons/freaksenv/lib/python3.9/site-packages/pandas/core/dtypes/astype.py", line 299, in astype_array_safe
+    new_values = astype_array(values, dtype, copy=copy)
+  File "/Users/swilson/Documents/PhD/Devneurons/freaksenv/lib/python3.9/site-packages/pandas/core/dtypes/astype.py", line 230, in astype_array
+    values = astype_nansafe(values, dtype, copy=copy)
+  File "/Users/swilson/Documents/PhD/Devneurons/freaksenv/lib/python3.9/site-packages/pandas/core/dtypes/astype.py", line 170, in astype_nansafe
+    return arr.astype(dtype, copy=True)
+ValueError: invalid literal for int() with base 10: 'AN-L-Sens-B2-ACp-02'
+
+I've never seen that error before. The neuron does have connectors and isn't just a point, so I can't see where a non-numeric value could be coming from
+
+
+However, despite this MRE reproducing this error earlier today (as does the original script too), now it throughs a new error:
+
+there are multiple 'runtime warnings (invalid value encountered in divide)' during the dotprop generation, and then later the index error
+
+making dotprops:   0%|                                                                                            | 1/1638 [00:06<2:48:22,  6.17s/it]/Users/swilson/Documents/PhD/Devneurons/freaksenv/lib/python3.9/site-packages/navis/core/core_utils.py:215: RuntimeWarning: invalid value encountered in divide
+  alpha = (s[:, 0] - s[:, 1]) / np.sum(s, axis=1)
+making dotprops:  28%|█████████████████████████                                                                  | 451/1638 [00:07<00:10, 111.76it/s]/Users/swilson/Documents/PhD/Devneurons/freaksenv/lib/python3.9/site-packages/navis/core/core_utils.py:215: RuntimeWarning: invalid value encountered in divide
+  alpha = (s[:, 0] - s[:, 1]) / np.sum(s, axis=1)
+making dotprops: 100%|██████████████████████████████████████████████████████████████████████████████████████████| 1638/1638 [00:13<00:00, 121.44it/s]
+INFO:__main__:Training...                                                                                                                            
+cross validation partitions:   0%|                                                                                             | 0/5 [00:00<?, ?it/sINFO  : Comparing matching pairs (navis.nbl.smat)                                                                                                     
+INFO:navis.nbl.smat:Comparing matching pairs                                                                                                         
+cross validation partitions:   0%|                                                                                             | 0/5 [00:00<?, ?it/sINFO  : Counting results (this may take a while) (navis.nbl.smat)                                                                                     
+INFO:navis.nbl.smat:Counting results (this may take a while)                                                                                         
+cross validation partitions:   0%|     
+Traceback (most recent call last):
+  File "/Users/swilson/Documents/PhD/Freaks/scripts/for_chris/MRE2.py", line 388, in <module>
+    df = cross_validation(paired)
+  File "/Users/swilson/Documents/PhD/Freaks/scripts/for_chris/MRE2.py", line 359, in cross_validation
+    nblaster = train_nblaster(training, threads=None)
+  File "/Users/swilson/Documents/PhD/Freaks/scripts/for_chris/MRE2.py", line 290, in train_nblaster
+    score_mat = builder.build(threads)
+  File "/Users/swilson/Documents/PhD/Devneurons/freaksenv/lib/python3.9/site-packages/navis/nbl/smat.py", line 624, in build
+    (dig0, dig1), cells = self._build(threads)
+  File "/Users/swilson/Documents/PhD/Devneurons/freaksenv/lib/python3.9/site-packages/navis/nbl/smat.py", line 507, in _build
+    self.match_counts_ = self._count_results(match_results)
+  File "/Users/swilson/Documents/PhD/Devneurons/freaksenv/lib/python3.9/site-packages/navis/nbl/smat.py", line 352, in _count_results
+    counts[tuple(cells[:, i] for i in range(cells.shape[1]))] += cnt
+IndexError: index 10 is out of bounds for axis 1 with size 10
+
+
+
+
+
+
+### Issue/MRE3 ###
+
+
+Description: 
+
+Not properly an error/MRE, but an additios I was hoping to add to the N/SyNBLAST scripts and wondered if you could help advise me with the implementation. 
+
+In Seymour (and presumably a number of future connectomes) there are a handful of non-unique, duplicated skids/neurons in left/right pairs. CatmaidNeuronLists must be unique, so these need to be dealt with
+For Seymour this involves two neurons on the left respectively having 2 right neurons paired to them (owing to some developmental phenomena)
+Importantly however, for other connectomes this could involve duplicates which have >2 (potentially very many) neurons paired to a single cell on the other hemisphere
+
+Since these two additional neurons weren't interesting, originally I just removed them from the csv file (within the 'get_neurons' function, prior to any being fetched from CATMAID)
+I'd like to find a way to properly deal with duplicates however (such that the script can be flexibly used for future connectomes), and to ensure calculate NBLAST and SyNBLAST are calculated for these pairs.
+
+Within the script, I made an unsuccessful attempt to take duplicate skids into some separate 'channel'
+This could either be via something like the 'check_duplicates' function (which extracts duplicate rows from the dataframe prior to applying a simplified 'get_neurons' function)
+or
+via a more complicated 'get_neurons' function which handles these within. This would then need to deal with the fact that it may return varying numbers of CatmaidNeuronLists
+
+I then planned to have this parallel 'channel' take duplicates and have them identically prepared for NBLAST/SyNBLAST (transform them + convert to dotprops) via 'duplicate_prepare' 
+The idea would then have been that the trained NBLASTER/SyNBLASTER algorithms are re-applied to score only those handful of duplicate pairs, but I'm not sure this would even have been feasible
+
+Firstly, would the above sound feasible? If so, could you suggest the best way to implement this?
+I marked the problematic regions of code with 'TO DO', if that helps
+
+Secondly, there is an issue in that there may be some neurons with >2 paired skids — and hence more than two 'channels' would be needed to handle them
+Just like Russian/Matryoshka dolls, I could imagine some silly outcome where — if there were many duplicates of the same skid — each of these would need to have the next duplicate row dealt with by recursively applying the same method of handling duplicates in the first place
+Do you have any ideas on flexibly dealing with this possibility?
+
+Alternatively, is there some way of avoiding utilising CatmaidNeuronLists altogether? That would then solve the duplicate problem altogether
+
+
+
+
+
